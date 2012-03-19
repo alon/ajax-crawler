@@ -11,7 +11,30 @@ Todo:
 
 """
 
-from flask import Flask, request
+import os
+import dircache
+import sys
+
+try:
+    from flask import Flask, request
+except ImportError:
+    print "missing flask, please install"
+    sys.exit(-1)
+
+def which(f):
+    for p in os.environ['PATH'].split(':'):
+        if f in dircache.listdir(p):
+            return os.path.join(p, f)
+    return None
+
+def require(exe):
+    if not which(exe):
+        print "missing %s" % exe
+        sys.exit(-1)
+
+require("phantomjs")
+require("casperjs")
+
 from getpage import getpage
 from urlparse import unquote, urlparse, urlunparse, ParseResult
 
